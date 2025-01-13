@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from flask_login import LoginManager
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, validates
 
 import uuid
@@ -23,6 +24,15 @@ app.secret_key = str(uuid.uuid4())
 
 admin = Admin(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+class Users(db.Model):
+    id = db.Column(db.Integer, unique=True, nullable=False)
+    username = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+
 
 class Clients(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -41,6 +51,8 @@ class Transactions(db.Model):
         if status not in STATUSES:
             raise ValueError(f"Failed status name validation. Choose from {STATUSES}.")
         return status
+
+
 
 
 with app.app_context():
