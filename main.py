@@ -24,14 +24,14 @@ app.secret_key = str(uuid.uuid4())
 admin = Admin(app)
 
 
-class User(db.Model):
+class Clients(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     balance: Mapped[float]
     commission_rate: Mapped[float]
     url_webhook: Mapped[str]
     
 
-class Transaction(db.Model):
+class Transactions(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     sum: Mapped[float]
     status: Mapped[str]
