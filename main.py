@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from flask_login import LoginManager
+from flask_login import LoginManager, UserMixin, login_required
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, validates
 
 import uuid
@@ -28,7 +28,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-class Users(db.Model):
+class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     username = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
@@ -65,17 +65,17 @@ def load_user(user_id):
     return Users.query.get(user_id)
 
 
+@app.cli.command("create-admin")
 def create_user():
-    username = input("Set username:")
-    password = input("Set password:")
-    
-    user = Users(username=username,
-                 password=password)
-    db.session.add(user)
-    db.session.commit()
-    
+    with app.app_context():
+        username = input("Set username:")
+        password = input("Set password:")
+        
+        user = Users(username=username,
+                     password=password)
+        db.session.add(user)
+        db.session.commit()
+
 
 if __name__ == "__main__":
-    with app.app_context():
-        create_user()
     app.run()
