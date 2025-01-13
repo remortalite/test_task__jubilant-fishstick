@@ -10,4 +10,5 @@ dependencies = [
     "flask-wtf>=1.2.2",
     "flask-admin>=1.6.1",
     "flask-login>=0.6.3",
+    "python-dotenv>=1.0.1",
 ]

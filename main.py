@@ -4,8 +4,10 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_login import LoginManager, UserMixin, login_required
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, validates
+from dotenv import load_dotenv
 
 import uuid
+import os
 
 
 STATUSES = ["Waiting", "Confirmed", "Cancelled", "Expired"]
@@ -20,7 +22,7 @@ db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
-app.secret_key = str(uuid.uuid4())
+app.secret_key = os.getenv("SECRET_KEY")
 
 admin = Admin(app)
 
@@ -56,7 +58,7 @@ class Transactions(db.Model):
 with app.app_context():
     db.create_all()
 
-admin.add_view(ModelView(Users, db.session))
+admin.add_view(ModelView(Clients, db.session))
 admin.add_view(ModelView(Transactions, db.session))
 
 
@@ -65,16 +67,28 @@ def load_user(user_id):
     return Users.query.get(user_id)
 
 
+def hash_password(password):
+    hash = password + app.secret_key
+    hash = hashlib.sha1(hash.encode())
+    password = hash.hexdigest()
+    return password
+
+
 @app.cli.command("create-admin")
 def create_user():
     with app.app_context():
         username = input("Set username:")
-        password = input("Set password:")
+        password = hash_password(input("Set password:"))
         
         user = Users(username=username,
                      password=password)
         db.session.add(user)
         db.session.commit()
+
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return 'Unauthorized', 401
 
 
 if __name__ == "__main__":

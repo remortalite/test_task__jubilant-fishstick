@@ -1,5 +1,6 @@
 # Project filed and dirs
 instance/
+.env
 
 
 # Python-generated files
