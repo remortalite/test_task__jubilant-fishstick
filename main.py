@@ -4,6 +4,8 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, validates
 
+import uuid
+
 
 STATUSES = ["Waiting", "Confirmed", "Cancelled", "Expired"]
 
@@ -17,6 +19,7 @@ db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
+app.secret_key = str(uuid.uuid4())
 
 admin = Admin(app)
 
@@ -36,8 +39,8 @@ class Transaction(db.Model):
     @validates("status")
     def validate_status(self, key, status):
         if status not in STATUSES:
-            raise ValueError("Failed status name validation")
-        return address
+            raise ValueError(f"Failed status name validation. Choose from {STATUSES}.")
+        return status
 
 
 with app.app_context():
