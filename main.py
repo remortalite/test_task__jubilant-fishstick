@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, validates
 
 
@@ -15,6 +17,8 @@ db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
+
+admin = Admin(app)
 
 
 class User(db.Model):
@@ -38,6 +42,9 @@ class Transaction(db.Model):
 
 with app.app_context():
     db.create_all()
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Transaction, db.session))
 
 
 if __name__ == "__main__":

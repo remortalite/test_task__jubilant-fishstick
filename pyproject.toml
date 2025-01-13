@@ -8,4 +8,5 @@ dependencies = [
     "flask>=3.1.0",
     "flask-sqlalchemy>=3.1.1",
     "flask-wtf>=1.2.2",
+    "flask-admin>=1.6.1",
 ]
