@@ -1,3 +1,7 @@
+# Project filed and dirs
+instance/
+
+
 # Python-generated files
 __pycache__/
 *.py[oc]
