@@ -29,7 +29,7 @@ login_manager.init_app(app)
 
 
 class Users(db.Model):
-    id = db.Column(db.Integer, unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     username = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
 
@@ -53,14 +53,29 @@ class Transactions(db.Model):
         return status
 
 
-
-
 with app.app_context():
     db.create_all()
 
-admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(Transaction, db.session))
+admin.add_view(ModelView(Users, db.session))
+admin.add_view(ModelView(Transactions, db.session))
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(user_id)
+
+
+def create_user():
+    username = input("Set username:")
+    password = input("Set password:")
+    
+    user = Users(username=username,
+                 password=password)
+    db.session.add(user)
+    db.session.commit()
+    
 
 if __name__ == "__main__":
+    with app.app_context():
+        create_user()
     app.run()
