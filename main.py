@@ -7,18 +7,21 @@ import flask
 import flask_login
 import hashlib
 from flask_admin import Admin
-
+from dotenv import load_dotenv
 
 import uuid
 import os
 
 
-from dotenv import load_dotenv
-
 load_dotenv()
 app.secret_key = os.getenv("SECRET_KEY")
 
 login_manager.init_app(app)
+
+admin = Admin(app)
+
+admin.add_view(AdminView(models.Clients, db.session))
+admin.add_view(AdminView(models.Transactions, db.session))
 
 
 @app.cli.command("create-admin")
@@ -65,14 +68,6 @@ def logout():
     username = flask_login.current_user.username
     flask_login.logout_user()
     return f'Logged out, bye {username}!'
-
-
-
-admin = Admin(app)
-
-admin.add_view(AdminView(models.Clients, db.session))
-admin.add_view(AdminView(models.Transactions, db.session))
-
 
 
 if __name__ == "__main__":
