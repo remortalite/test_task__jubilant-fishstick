@@ -1,6 +1,6 @@
 from login import login_manager, hash_password
 from app import app, db
-from admin import AdminView
+from admin import ClientsAdminView, TransactionsAdminView
 import models
 
 import flask
@@ -20,8 +20,8 @@ login_manager.init_app(app)
 
 admin = Admin(app)
 
-admin.add_view(AdminView(models.Clients, db.session))
-admin.add_view(AdminView(models.Transactions, db.session))
+admin.add_view(ClientsAdminView(models.Clients, db.session))
+admin.add_view(TransactionsAdminView(models.Transactions, db.session))
 
 
 @app.cli.command("create-admin")

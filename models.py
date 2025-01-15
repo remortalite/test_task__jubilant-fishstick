@@ -1,5 +1,5 @@
 from app import app, db
-from sqlalchemy.orm import Mapped, mapped_column, validates
+from sqlalchemy.orm import Mapped, mapped_column, validates, relationship
 from flask_login import UserMixin
 
 
@@ -13,16 +13,18 @@ class Users(UserMixin, db.Model):
 
 
 class Clients(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    balance: Mapped[float]
-    commission_rate: Mapped[float]
-    url_webhook: Mapped[str]
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    balance = db.Column(db.Float, nullable=False)
+    commission_rate = db.Column(db.Float, nullable=False)
+    url_webhook = db.Column(db.String(250), nullable=False)
     
 
 class Transactions(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    sum: Mapped[float]
-    status: Mapped[str]
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    sum = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(64), nullable=False)
+    client_id = db.Column(db.Integer, db.ForeignKey(Clients.id))
+    client_ref = db.relationship('Clients')
 
     @validates("status")
     def validate_status(self, key, status):
