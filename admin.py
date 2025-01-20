@@ -3,7 +3,7 @@ from flask_admin.form import Select2Widget
 import flask_login
 import flask
 
-from forms import TransactionCreateForm
+from forms import TransactionForm
 
 
 class AdminView(ModelView):

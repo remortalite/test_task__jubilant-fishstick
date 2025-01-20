@@ -24,7 +24,7 @@ class Transactions(db.Model):
     sum = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(64), nullable=False)
     client_id = db.Column(db.Integer, db.ForeignKey(Clients.id))
-    client_ref = db.relationship('Clients')
+    client = db.relationship('Clients')
 
     @validates("status")
     def validate_status(self, key, status):
