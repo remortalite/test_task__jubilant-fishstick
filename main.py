@@ -1,6 +1,7 @@
 from login import login_manager, hash_password
 from app import app, db
 from admin import ClientsAdminView, TransactionsAdminView
+from views import DashboardView
 import models
 
 import flask
@@ -20,6 +21,7 @@ login_manager.init_app(app)
 
 admin = Admin(app)
 
+admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
 admin.add_view(ClientsAdminView(models.Clients, db.session))
 admin.add_view(TransactionsAdminView(models.Transactions, db.session))
 
@@ -60,14 +62,14 @@ def login():
 @app.route('/protected')
 @flask_login.login_required
 def protected():
-    return f'Logged in as: {flask_login.current_user.username}'
+    return f'Logged in as: {flask_login.current_user.username}. Admin panel <a href="/admin">here</a>'
 
 
 @app.route('/logout')
 def logout():
     username = flask_login.current_user.username
     flask_login.logout_user()
-    return f'Logged out, bye {username}!'
+    return f'Logged out, bye {username}! <a href="/login">Login</a>'
 
 
 if __name__ == "__main__":

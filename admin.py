@@ -1,6 +1,9 @@
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.form import Select2Widget 
 import flask_login
 import flask
+
+from forms import TransactionCreateForm
 
 
 class AdminView(ModelView):
@@ -17,3 +20,4 @@ class ClientsAdminView(AdminView):
 
 class TransactionsAdminView(AdminView):
     column_list = ['sum', 'status', 'client', 'client_id']
+    form = TransactionForm
