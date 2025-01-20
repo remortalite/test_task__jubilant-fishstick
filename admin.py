@@ -21,3 +21,13 @@ class ClientsAdminView(AdminView):
 class TransactionsAdminView(AdminView):
     column_list = ['sum', 'status', 'client', 'client_id']
     form = TransactionForm
+
+    can_view_details = True
+    # details_modal = True
+
+    # column_editable_list = ('status',)
+
+    # def get_edit_form(self):
+    #     form = super().get_edit_form()
+    #     form.status = TransactionForm.status
+    #     return form
