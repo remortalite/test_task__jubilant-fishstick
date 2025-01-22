@@ -11,6 +11,7 @@ import hashlib
 from flask_admin import Admin
 from dotenv import load_dotenv
 
+import json
 import uuid
 import os
 
@@ -80,7 +81,37 @@ def create_transaction():
         transaction = models.Transactions(**data)
         db.session.add(transaction)
         db.session.commit()
-    return "Ok", 200
+
+        transaction_id = transaction.id
+    return "Transaction created. Id: %s" % transaction_id, 200
+
+
+@app.route('/cancel_transaction', methods=['POST'])
+def cancel_transaction():
+    with app.app_context():
+        data = request.get_json()
+        transaction_id = data['id']
+        transaction = models.Transactions.query.get(transaction_id)
+        if transaction:
+            transaction.status = 'Cancelled'
+            db.session.commit()
+            return 'Cancelled', 200
+    return 'Bad data', 300
+
+
+@app.route('/check_transaction', methods=['GET'])
+def check_transaction():
+    with app.app_context():
+        data = request.get_json()
+        transaction_id = data['id']
+        transaction = models.Transactions.query.get(transaction_id)
+        return {
+            'id': transaction.id,
+            'sum': transaction.sum,
+            'status': transaction.status,
+            'client_id': transaction.client_id,
+            }
+    return "Bad data", 300
 
 
 if __name__ == "__main__":
