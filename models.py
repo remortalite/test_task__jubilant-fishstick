@@ -22,7 +22,7 @@ class Clients(db.Model):
 class Transactions(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     sum = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String(64), nullable=False)
+    status = db.Column(db.String(64), nullable=False, default='Waiting')
     client_id = db.Column(db.Integer, db.ForeignKey(Clients.id))
     client = db.relationship('Clients')
 
