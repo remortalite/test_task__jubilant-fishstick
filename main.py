@@ -5,6 +5,7 @@ from views import DashboardView
 import models
 
 import flask
+from flask import request
 import flask_login
 import hashlib
 from flask_admin import Admin
@@ -70,6 +71,16 @@ def logout():
     username = flask_login.current_user.username
     flask_login.logout_user()
     return f'Logged out, bye {username}! <a href="/login">Login</a>'
+
+
+@app.route('/create_transaction', methods=['POST'])
+def create_transaction():
+    with app.app_context():
+        data = request.get_json()
+        transaction = models.Transactions(**data)
+        db.session.add(transaction)
+        db.session.commit()
+    return "Ok", 200
 
 
 if __name__ == "__main__":
